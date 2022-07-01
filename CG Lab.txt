@@ -1,0 +1,576 @@
+Lab 1
+#include<windows.h>
+#include<GL/glu.h>
+#include<GL/glut.h>
+#include<math.h>
+
+void Draw()
+{
+    GLfloat x1=350,y1=30,x2=350,y2=400;
+    GLfloat M,p,dx,dy,x,y,t;
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    if((x2-x1)==0)
+       M = (y2-y1);
+    else
+        M = (y2-y1)/(x2-x1);
+
+    if(fabs(M)<1)
+    {
+        if(x1>x2)
+        {
+            t = x1;
+            x1 = x2;
+            x2 = t;
+
+            t = y1;
+            y1 = y2;
+            y2 = t;
+        }
+
+        dx = fabs(x2-x1);
+        dy = fabs(y2-y1);
+
+        p = 2*dy-dx;
+
+        x=x1;
+        y=y1;
+
+        glBegin(GL_POINTS);
+            while(x<=x2)
+            {
+              glVertex2f(x,y);
+              x=x+1;
+
+              if(p>=0)
+              {
+                 if(M<1)
+                    y=y+1;
+                else
+                    y=y-1;
+                 p = p+2*dy-2*dx;
+              }
+              else
+              {
+                  y=y;
+                  p = p+2*dy;
+              }
+            }
+        glEnd();
+    }
+
+    if(fabs(M)>=1)
+    {
+        if(y1>y2)
+        {
+            t = x1;
+            x1 = x2;
+            x2 = t;
+
+            t = y1;
+            y1 = y2;
+            y2 = t;
+        }
+
+        dx = fabs(x2-x1);
+        dy = fabs(y2-y1);
+
+        p = 2*dx-dy;
+
+        x=x1;
+        y=y1;
+
+        glBegin(GL_POINTS);
+            while(y<=y2)
+            {
+              glVertex2f(x,y);
+              y=y+1;
+
+              if(p>=0)
+              {
+                 if(M>=1)
+                    x=x+1;
+                else
+                    x=x-1;
+                 p = p+2*dx-2*dy;
+              }
+              else
+              {
+                  x=x;
+                  p = p+2*dx;
+              }
+            }
+        glEnd();
+    }
+
+    glFlush();
+}
+
+void MyInit()
+{
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluOrtho2D(0,500,0,500);
+    glMatrixMode(GL_MODELVIEW);
+}
+
+int main(int argC,char *argV[])
+{
+    glutInit(&argC,argV);
+    glutInitDisplayMode(GLUT_RGB|GLUT_SINGLE);
+    glutInitWindowPosition(0,0);
+    glutInitWindowSize(500,500);
+    glutCreateWindow("Brenham’s Line Drawing Algo");
+    MyInit();
+    glutDisplayFunc(Draw);
+    glutMainLoop();
+    return 0;
+}
+
+Lab 2
+#include<windows.h>
+#include<GL/glu.h>
+#include<GL/glut.h>
+#include<stdio.h>
+ 
+ 
+GLfloat px,py,R;
+ 
+void Draw()
+{
+   glClear(GL_COLOR_BUFFER_BIT);
+   glColor3f(0,0,1);
+   glBegin(GL_LINE_LOOP);
+   glVertex2f(0.1,0.4);
+   glVertex2f(0.7,0.4);
+   glVertex2f(0.4,0.8);
+   glEnd();
+ 
+   glLoadIdentity();
+   glTranslatef(px,py,0);
+   glRotatef(R,0,0,1);
+   glTranslatef(-px,-py,0);
+ 
+   glColor3f(1,0,0);
+   glBegin(GL_LINE_LOOP);
+   glVertex2f(0.1,0.4);
+   glVertex2f(0.7,0.4);
+   glVertex2f(0.4,0.8);
+   glEnd();
+   glFlush();
+ 
+}
+ 
+ 
+int main(int argc, char *argv[ ])
+{
+   printf("Enter the Rotation referencepoint[pivot point]");
+   scanf("%f%f",&px,&py);
+   printf("Enter the Rotation Degree\n");
+   scanf("%f",&R);
+   glutInit(&argc,argv);
+   glutInitDisplayMode(GLUT_RGB| GLUT_SINGLE);
+   glutInitWindowPosition(0,0);
+   glutInitWindowSize(500,500);
+   glutCreateWindow("Triangle Rotation");
+   glutDisplayFunc(Draw);
+   glutMainLoop();
+   return 0;
+}
+
+Lab 3
+#include<windows.h>
+#include <stdlib.h>
+#include <GL/glut.h>
+
+        GLfloat vertices[][3] = {{-1.0,-1.0,-1.0},{1.0,-1.0,-1.0},
+        {1.0,1.0,-1.0}, {-1.0,1.0,-1.0}, {-1.0,-1.0,1.0},
+        {1.0,-1.0,1.0}, {1.0,1.0,1.0}, {-1.0,1.0,1.0}};
+
+
+        GLfloat colors[][3] = {{0.0,0.0,0.0},{1.0,0.0,0.0},
+        {1.0,1.0,0.0}, {0.0,1.0,0.0}, {0.0,0.0,1.0},
+        {1.0,0.0,1.0}, {1.0,1.0,1.0}, {0.0,1.0,1.0}};
+
+void polygon(int a, int b, int c , int d)
+{
+
+/* draw a polygon via list of vertices */
+
+         glBegin(GL_POLYGON);
+                glColor3fv(colors[a]);
+                glVertex3fv(vertices[a]);
+
+                glColor3fv(colors[b]);
+                glVertex3fv(vertices[b]);
+
+                glColor3fv(colors[c]);
+                glVertex3fv(vertices[c]);
+
+                glColor3fv(colors[d]);
+                glVertex3fv(vertices[d]);
+        glEnd();
+                                                                                                                                                                                                                }
+
+void colorcube(void)
+{
+
+/* map vertices to faces */
+
+        polygon(0,3,2,1);
+        polygon(2,3,7,6);
+        polygon(0,4,7,3);
+        polygon(1,2,6,5);
+        polygon(4,5,6,7);
+        polygon(0,1,5,4);
+}
+
+static GLfloat theta[] = {0.0,0.0,0.0};
+static GLint axis = 2;
+
+void display(void)
+{
+/* display callback, clear frame buffer and z buffer,
+   rotate cube and draw, swap buffers */
+
+ glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glLoadIdentity();
+        glRotatef(theta[0], 1.0, 0.0, 0.0);
+        glRotatef(theta[1], 0.0, 1.0, 0.0);
+        glRotatef(theta[2], 0.0, 0.0, 1.0);
+        colorcube();
+        glFlush();
+        glutSwapBuffers();
+}
+
+void spinCube()
+{
+
+/* Idle callback, spin cube 2 degrees about selected axis */
+
+        theta[axis] += 1.0;
+        if( theta[axis] > 360.0 ) theta[axis] -= 360.0;
+        /* display(); */
+        glutPostRedisplay();
+}
+
+void mouse(int btn, int state, int x, int y)
+{
+
+/* mouse callback, selects an axis about which to rotate */
+
+    if(btn==GLUT_LEFT_BUTTON && state == GLUT_DOWN) axis = 0;
+    if(btn==GLUT_MIDDLE_BUTTON && state == GLUT_DOWN) axis = 1;
+    if(btn==GLUT_RIGHT_BUTTON && state == GLUT_DOWN) axis = 2;
+}
+
+void myReshape(int w, int h)
+{
+    glViewport(0, 0, w, h);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    if (w <= h)
+        glOrtho(-2.0, 2.0, -2.0 * (GLfloat) h / (GLfloat) w,
+            2.0 * (GLfloat) h / (GLfloat) w, -10.0, 10.0);
+    else
+        glOrtho(-2.0 * (GLfloat) w / (GLfloat) h,
+            2.0 * (GLfloat) w / (GLfloat) h, -2.0, 2.0, -10.0, 10.0);
+    glMatrixMode(GL_MODELVIEW);
+}
+
+
+int main(int argc, char **argv)
+{
+   glutInit(&argc, argv);
+
+/* need both double buffering and z buffer */
+
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
+    glutInitWindowSize(500, 500);
+    glutCreateWindow("Rotating a Color Cube");
+    glutReshapeFunc(myReshape);
+    glutDisplayFunc(display);
+    glutIdleFunc(spinCube);
+    glutMouseFunc(mouse);
+    glEnable(GL_DEPTH_TEST); /* Enable hidden--surface--removal */
+    glutMainLoop();
+}
+
+Lab 4
+#include<windows.h>
+#include<stdlib.h>
+#include<GL/glut.h>
+GLfloat vertices[][3]={{-1.0,-1.0,-1.0},{1.0,-1.0,-1.0},
+{1.0,1.0,-1.0},{-1.0,1.0,-1.0},{-1.0,-1.0,1.0},
+{1.0,-1.0,1.0},{1.0,1.0,1.0},{-1.0,1.0,1.0}};
+GLfloat colors[][3]={{0.0,0.0,0.0},{1.0,0.0,0.0},
+{1.0,1.0,0.0},{0.0,1.0,0.0},{0.0,0.0,1.0},
+{1.0,0.0,1.0},{1.0,1.0,1.0},{0.0,1.0,1.0}};
+
+void polygon(int a, int b, int c, int d)
+{
+	glBegin(GL_POLYGON);
+		glColor3fv(colors[a]);
+		glVertex3fv(vertices[a]);
+		glColor3fv(colors[b]);
+		glVertex3fv(vertices[b]);
+		glColor3fv(colors[c]);
+		glVertex3fv(vertices[c]);
+		glColor3fv(colors[d]);
+		glVertex3fv(vertices[d]);
+	glEnd();
+}
+
+void colorcube()
+{
+	polygon(0,3,2,1);
+	polygon(2,3,7,6);
+	polygon(0,4,7,3);
+	polygon(1,2,6,5);
+	polygon(4,5,6,7);
+	polygon(0,1,5,4);
+}
+
+static GLfloat theta[]={0.0,0.0,0.0};
+static GLint axis=2;
+static GLdouble viewer[]={0.0,0.0,5.0};
+
+void display(void)
+{
+	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+	glLoadIdentity();
+	gluLookAt(viewer[0], viewer[1],viewer[2],0.0,0.0,0.0,
+0.0,1.0,0.0);
+	glRotatef(theta[0],1.0,0.0,0.0);
+	glRotatef(theta[1],0.0,1.0,0.0);
+	glRotatef(theta[2],0.0,0.0,1.0);
+	colorcube();
+	glFlush();
+	glutSwapBuffers();
+}
+
+void mouse(int btn, int state, int x, int y)
+{
+	if(btn==GLUT_LEFT_BUTTON && state==GLUT_DOWN) axis=0;
+	if(btn==GLUT_MIDDLE_BUTTON&&state==GLUT_DOWN) axis=1;
+	if(btn==GLUT_RIGHT_BUTTON&&state==GLUT_DOWN) axis=2;
+	theta[axis]+=2.0;
+	if(theta[axis]>360.0) theta[axis]-=360.0;
+	display();
+}
+
+void keys(unsigned char key, int x, int y)
+{
+	if(key == 'x') viewer[0]-=1.0;
+	if(key == 'X') viewer[0]+=1.0;
+	if(key == 'y') viewer[1]-=1.0;
+	if(key == 'Y') viewer[1]+=1.0;
+	if(key == 'z') viewer[2]-=1.0;
+	if(key == 'Z') viewer[2]+=1.0;
+	display();
+}
+
+void myReshape(int w, int h)
+{
+	glViewport(0,0,w,h);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	if(w<=h)
+ glFrustum(-2.0,2.0,-2.0*(GLfloat)h/(GLfloat)w,
+2.0*(GLfloat)h/(GLfloat)w, 2.0,20.0);
+	else
+glFrustum(-2.0,2.0,-2.0*(GLfloat)w/(GLfloat)h,
+2.0*(GLfloat)w/(GLfloat)h, 2.0,20.0);
+	glMatrixMode(GL_MODELVIEW);
+}
+
+
+
+int main(int argc, char **argv)
+{
+	glutInit(&argc, argv);
+	glutInitDisplayMode(GLUT_DOUBLE|GLUT_RGB|GLUT_DEPTH);
+	glutInitWindowSize(500,500);
+	glutCreateWindow("Colorcube Viewer");
+	glutReshapeFunc(myReshape);
+	glutDisplayFunc(display);
+	glutMouseFunc(mouse);
+	glutKeyboardFunc(keys);
+	glEnable(GL_DEPTH_TEST);
+	glutMainLoop();
+}
+
+Lab 5
+#include <windows.h>
+#include <stdio.h>
+#include <GL/glut.h>
+#define outcode int
+
+double xmin=50,ymin=50, xmax=100,ymax=100; // Window boundaries
+double xvmin=200,yvmin=200,xvmax=300,yvmax=300; // Viewport boundaries
+
+//bit codes for the right, left, top, & bottom
+const int RIGHT = 8;
+const int LEFT = 2;
+const int TOP = 4;
+const int BOTTOM = 1;
+
+//used to compute bit codes of a point
+outcode ComputeOutCode (double x, double y);
+
+//Cohen-Sutherland clipping algorithm clips a line from
+//P0 = (x0, y0) to P1 = (x1, y1) against a rectangle with
+//diagonal from (xmin, ymin) to (xmax, ymax).
+
+void CohenSutherlandLineClipAndDraw (double x0, double y0,double x1, double y1)
+{
+        //Outcodes for P0, P1, and whatever point lies outside the clip rectangle
+        outcode outcode0, outcode1, outcodeOut;
+        bool accept = false, done = false;
+
+        //compute outcodes
+        outcode0 = ComputeOutCode (x0, y0);
+        outcode1 = ComputeOutCode (x1, y1);
+        do{
+                if (!(outcode0 | outcode1))    //logical or is 0 Trivially accept & exit
+                {
+                        accept = true;
+                        done = true;
+                }
+                else if (outcode0 & outcode1)   //logical and is not 0. Trivially reject and exit
+                        done = true;
+                else
+                {
+                        //failed both tests, so calculate the line segment to clip
+                        //from an outside point to an intersection with clip edge
+                        double x, y;
+
+                        //At least one endpoint is outside the clip rectangle; pick it.
+                        outcodeOut = outcode0? outcode0: outcode1;
+
+                        //Now find the intersection point;
+                        //use formulas y = y0 + slope * (x - x0), x = x0 + (1/slope)* (y - y0)
+                        if (outcodeOut & TOP)          //point is above the clip rectangle
+                        {
+                                x = x0 + (x1 - x0) * (ymax - y0)/(y1 - y0);
+                                y = ymax;
+                        }
+                        else if (outcodeOut & BOTTOM)  //point is below the clip rectangle
+                        {
+                                x = x0 + (x1 - x0) * (ymin - y0)/(y1 - y0);
+                                y = ymin;
+                        }
+                        else if (outcodeOut & RIGHT)   //point is to the right of clip rectangle
+                        {
+                                y = y0 + (y1 - y0) * (xmax - x0)/(x1 - x0);
+                                x = xmax;
+                        }
+                        else                           //point is to the left of clip rectangle
+                        {
+                                y = y0 + (y1 - y0) * (xmin - x0)/(x1 - x0);
+                                x = xmin;
+                        }
+
+                        //Now we move outside point to intersection point to clip
+                        //and get ready for next pass.
+                        if (outcodeOut == outcode0)
+                        {
+                                x0 = x;
+                                y0 = y;
+                                outcode0 = ComputeOutCode (x0, y0);
+                        }
+                        else
+                        {
+                                x1 = x;
+                                y1 = y;
+                                outcode1 = ComputeOutCode (x1, y1);
+                        }
+                }
+        }while (!done);
+
+        if (accept)
+        {                // Window to viewport mappings
+                double sx=(xvmax-xvmin)/(xmax-xmin); // Scale parameters
+                double sy=(yvmax-yvmin)/(ymax-ymin);
+                double vx0=xvmin+(x0-xmin)*sx;
+                double vy0=yvmin+(y0-ymin)*sy;
+                double vx1=xvmin+(x1-xmin)*sx;
+                double vy1=yvmin+(y1-ymin)*sy;
+                        //draw a red colored viewport
+                glColor3f(1.0, 0.0, 0.0);
+                glBegin(GL_LINE_LOOP);
+                        glVertex2f(xvmin, yvmin);
+                        glVertex2f(xvmax, yvmin);
+                        glVertex2f(xvmax, yvmax);
+                        glVertex2f(xvmin, yvmax);
+                glEnd();
+
+                glColor3f(0.0,0.0,1.0); // draw blue colored clipped line
+                glBegin(GL_LINES);
+                        glVertex2d (vx0, vy0);
+                        glVertex2d (vx1, vy1);
+                glEnd();
+        }
+}
+//Compute the bit code for a point (x, y) using the clip rectangle
+//bounded diagonally by (xmin, ymin), and (xmax, ymax)
+outcode ComputeOutCode (double x, double y)
+{
+        outcode code = 0;
+        if (y > ymax)              //above the clip window
+                code |= TOP;
+        else if (y < ymin)         //below the clip window
+                code |= BOTTOM;
+        if (x > xmax)              //to the right of clip window
+                code |= RIGHT;
+        else if (x < xmin)         //to the left of clip window
+                code |= LEFT;
+        return code;
+}
+
+void display()
+{
+double x0=60,y0=20,x1=80,y1=120;
+glClear(GL_COLOR_BUFFER_BIT);
+//draw the line with red color
+glColor3f(1.0,0.0,0.0);
+//bres(120,20,340,250);
+glBegin(GL_LINES);
+                        glVertex2d (x0, y0);
+                        glVertex2d (x1, y1);
+                glEnd();
+
+//draw a blue colored window
+glColor3f(0.0, 0.0, 1.0);
+
+glBegin(GL_LINE_LOOP);
+  glVertex2f(xmin, ymin);
+  glVertex2f(xmax, ymin);
+  glVertex2f(xmax, ymax);
+  glVertex2f(xmin, ymax);
+glEnd();
+
+CohenSutherlandLineClipAndDraw(x0,y0,x1,y1);
+glFlush();
+}
+
+void myinit()
+{
+        glClearColor(1.0,1.0,1.0,1.0);
+        glColor3f(1.0,0.0,0.0);
+        glPointSize(1.0);
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+        gluOrtho2D(0.0,499.0,0.0,499.0);
+}
+int main(int argc, char **argv)
+{
+        glutInit(&argc,argv);
+        glutInitDisplayMode(GLUT_SINGLE|GLUT_RGB);
+        glutInitWindowSize(500,500);
+        glutInitWindowPosition(0,0);
+        glutCreateWindow("Cohen Sutherland Line Clipping Algorithm");
+        glutDisplayFunc(display);
+        myinit();
+        glutMainLoop();
+}
