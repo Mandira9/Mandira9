@@ -1,0 +1,491 @@
+LAB-02
+
+package `in`.edu.cambridge.calculator
+import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import android.widget.TextView
+import net.objecthunter.exp4j.ExpressionBuilder
+class MainActivity : AppCompatActivity() {
+ private lateinit var zero: TextView
+ private lateinit var one: TextView
+ private lateinit var two: TextView
+ private lateinit var three: TextView
+ private lateinit var four: TextView
+ private lateinit var five: TextView
+ private lateinit var six: TextView
+ private lateinit var seven: TextView
+ private lateinit var eight: TextView
+ private lateinit var nine: TextView
+ private lateinit var addition: TextView
+ private lateinit var subtraction: TextView
+ private lateinit var multiplication: TextView
+ private lateinit var division: TextView
+ private lateinit var equals : TextView
+ private lateinit var clear: TextView
+ private lateinit var dot: TextView
+ private lateinit var result : TextView
+ private lateinit var expression : TextView
+ override fun onCreate(savedInstanceState: Bundle?) {
+ super.onCreate(savedInstanceState)
+ setContentView(R.layout.activity_main)
+ zero = findViewById(R.id.zero)
+ one = findViewById(R.id.one)
+ two = findViewById(R.id.two)
+ three = findViewById(R.id.three)
+ four = findViewById(R.id.four)
+ five = findViewById(R.id.five)
+ six = findViewById(R.id.six)
+ seven = findViewById(R.id.seven)
+ eight = findViewById(R.id.eight)
+ nine = findViewById(R.id.nine)
+ dot = findViewById(R.id.dot)
+ clear = findViewById(R.id.clear)
+ addition = findViewById(R.id.addition)
+ subtraction = findViewById(R.id.subtraction)
+ division= findViewById(R.id.division)
+ multiplication = findViewById(R.id.multiplication)
+ equals = findViewById(R.id.equals)
+ result = findViewById(R.id.result)
+ expression = findViewById(R.id.expression)
+ zero.setOnClickListener {
+ pressButton("0", true)
+ }
+ one.setOnClickListener {
+ pressButton("1", true)
+ }
+ two.setOnClickListener {
+ pressButton("2", true)
+ }
+ three.setOnClickListener {
+ pressButton("3", true)
+ }
+ four.setOnClickListener {
+ pressButton("4", true)
+ }
+ five.setOnClickListener {
+ pressButton("5", true)
+ }
+ six.setOnClickListener {
+ pressButton("6", true)
+ }
+ seven.setOnClickListener {
+ pressButton("7", true)
+ }
+ eight.setOnClickListener {
+ pressButton("8", true)
+ }
+ nine.setOnClickListener {
+ pressButton("9", true)
+ }
+ addition.setOnClickListener {
+ pressButton("+", true)
+ }
+ subtraction.setOnClickListener {
+ pressButton("-", true)
+ }
+ multiplication.setOnClickListener {
+ pressButton("*", true)
+ }
+ division.setOnClickListener {
+ pressButton("/", true)
+ }
+ dot.setOnClickListener {
+ pressButton(".", true)
+ }
+ clear.setOnClickListener {
+ result.text = ""
+ expression.text = ""
+ }
+ equals.setOnClickListener {
+ val text = expression.text.toString()
+ val expression = ExpressionBuilder(text).build()
+ val expResult = expression.evaluate()
+ val longResult = expResult.toLong()
+ if (expResult == longResult.toDouble()) {
+ result.text = longResult.toString()
+ } else {
+ result.text = result.toString()
+ }
+ }
+ }
+ fun pressButton(string: String, clear: Boolean) {
+ if(clear) {
+ result.text = ""
+ expression.append(string)
+ } else {
+ expression.append(result.text)
+ expression.append(string)
+ result.text = ""
+ }
+ }
+}
+
+
+LAB-04
+
+//@file:Suppress("DEPRECATION")
+package `in`.edu.cambridge.wallpaper
+import android.app.WallpaperManager
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.os.Bundle
+import android.os.Handler
+import android.os.HandlerThread
+import android.widget.Button
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+class MainActivity : AppCompatActivity() {
+var myWallpaperList =
+arrayOf(R.drawable.wallpaper1,R.drawable.wallpaper2,R.drawable.wallpaper3,R.drawable.wall
+paper4,R.drawable.wallpaper5)
+ private lateinit var changeWallpaper:Button
+ override fun onCreate(savedInstanceState: Bundle?) {
+ super.onCreate(savedInstanceState)
+ setContentView(R.layout.activity_main)
+ changeWallpaper = findViewById(R.id.change_wallpaper)
+ changeWallpaper.setOnClickListener { setWallpaper() }
+ }
+ //@Suppress("DEPRECATION")
+ fun setWallpaper() {
+ Toast.makeText(this, "Setting Wallpaper please wait.", 
+Toast.LENGTH_SHORT).show()
+ //@Suppress("DEPRECATION", "TrailingComma")
+ @Suppress("DEPRECATION")
+ Handler().postDelayed({
+ for(i in myWallpaperList) {
+ val bitmap: Bitmap = BitmapFactory.decodeResource(resources, i)
+ val wallpaperManager = WallpaperManager.getInstance(baseContext)
+ wallpaperManager.setBitmap(bitmap)
+ }
+ }, 2000)
+ }
+}
+
+LAB-05
+
+package `in`.edu.cambridge.counter
+import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import android.widget.Button
+import android.widget.TextView
+import android.os.CountDownTimer
+//import android.view.View
+class MainActivity : AppCompatActivity() {
+ private lateinit var counterValue:TextView
+ private lateinit var startCounter : Button
+ private lateinit var stopCounter : Button
+ private lateinit var resetCounter : Button
+ val timer = MyCounter(10000000, 10)
+ var countervalue : Int = 0
+ override fun onCreate(savedInstanceState: Bundle?) {
+ super.onCreate(savedInstanceState)
+ setContentView(R.layout.activity_main)
+ counterValue = findViewById(R.id.counter_value)
+ startCounter = findViewById(R.id.start_counter)
+ startCounter.setOnClickListener {
+ timer.start()
+ startCounter.isEnabled=false
+ }
+ stopCounter = findViewById(R.id.stop_counter)
+ stopCounter.setOnClickListener {
+ timer.cancel()
+ startCounter.isEnabled=true
+ }
+ resetCounter = findViewById(R.id.reset_counter)
+ resetCounter.setOnClickListener {
+ countervalue = 0
+ counterValue.text = (countervalue).toString()
+ }
+ /*fun reset(view : View){
+ val count = 0
+ var text = count.toString()
+ }*/
+ }
+ inner class MyCounter(millisInFuture: Long, countDownInterval: Long) : 
+CountDownTimer(millisInFuture, countDownInterval) {
+ override fun onFinish() {
+ }
+ override fun onTick(millisUntilFinished: Long) {
+ countervalue++
+ counterValue.text = (countervalue).toString()
+ }
+ }
+}
+
+LAB-06
+
+package `in`.edu.cambridge.parsingxmlandjson
+import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import android.widget.Button
+import android.widget.TextView
+import org.json.JSONObject
+import java.io.IOException
+import java.nio.charset.Charset
+import javax.xml.parsers.DocumentBuilderFactory
+import android.annotation.SuppressLint as SuppressLint1
+class MainActivity : AppCompatActivity() {
+ private lateinit var parseXMLBtn: Button
+ private lateinit var parseJSONBtn: Button
+ private lateinit var datatype : TextView
+ private lateinit var cityName: TextView
+ private lateinit var latitude: TextView
+ private lateinit var longitude: TextView
+ private lateinit var temperature: TextView
+ private lateinit var humidity: TextView
+ override fun onCreate(savedInstanceState: Bundle?) {
+ super.onCreate(savedInstanceState)
+ setContentView(R.layout.activity_main)
+ parseXMLBtn = findViewById(R.id.parse_xml)
+ parseXMLBtn.setOnClickListener { parseXML() }
+ parseJSONBtn = findViewById(R.id.parse_json)
+ parseJSONBtn.setOnClickListener { parseJSON() }
+ parseXMLBtn.setOnClickListener { parseXML() }
+ datatype = findViewById(R.id.data_type)
+ cityName = findViewById(R.id.city_name)
+ latitude = findViewById(R.id.latitude)
+ longitude = findViewById(R.id.longitude)
+ temperature = findViewById(R.id.temperature)
+ humidity = findViewById(R.id.humidity)
+ }
+ @SuppressLint1("SetTextI18n")
+ fun parseXML(){
+ datatype.text = "XML Data"
+ try {
+ val iStream = assets.open("myxml.xml")
+ val builderFactory = DocumentBuilderFactory.newInstance()
+ var docBuilder = builderFactory.newDocumentBuilder()
+ var doc = docBuilder.parse(iStream)
+ cityName.text = "City Name : " + 
+doc.getElementsByTagName("City_Name").item(0).getFirstChild().getNodeValue()
+ latitude.text = "Latitude : " + 
+doc.getElementsByTagName("Latitude").item(0).getFirstChild().getNodeValue()
+ longitude.text = "Longitude : " + 
+doc.getElementsByTagName("Longitude").item(0).getFirstChild().getNodeValue()
+ temperature.text = "Temperature : " + 
+doc.getElementsByTagName("Temperature").item(0).getFirstChild().getNodeValue()
+ humidity.text = "Humidity : " + 
+doc.getElementsByTagName("Humidity").item(0).getFirstChild().getNodeValue()
+ }
+ catch (ex: IOException) {
+ }
+ }
+ @SuppressLint1("SetTextI18n")
+ fun parseJSON(){
+ datatype.text = "JSON Data"
+ val obj = JSONObject(loadJSONFromAsset())
+ cityName.text = "City Name : " + obj.getString("City Name")
+ latitude.text = "Latitude : " + obj.getString("Latitude")
+ longitude.text = "Longitude : " + obj.getString("Longitude")
+ temperature.text = "Temperature : " + obj.getString("Temperature")
+ humidity.text = "Humidity : " + obj.getString("Humidity")
+ }
+ private fun loadJSONFromAsset(): String {
+ val json: String?
+ try {
+ val inputStream = assets.open("myjson.json")
+ val size = inputStream.available()
+ val buffer = ByteArray(size)
+ val charset: Charset = Charsets.UTF_8
+ inputStream.read(buffer)
+ inputStream.close()
+ json = String(buffer, charset)
+ }
+ catch (ex: IOException) {
+ ex.printStackTrace()
+ return ""
+ }
+ return json
+ }
+}
+
+Assets File: Myjson.json
+{
+ "City Name": "Mysore",
+ "Latitude" : "12.295",
+ "Longitude" : "76.639",
+ "Temperature" : "22",
+ "Humidity" : "90%"
+}
+
+Myxml.xml
+<data>
+ <City_Name>Mysore</City_Name>
+ <Latitude>22.295</Latitude>
+ <Longitude>76.639</Longitude>
+ <Temperature>42</Temperature>
+ <Humidity>80%</Humidity>
+</data>
+
+LAB-07
+
+package `in`.edu.cambridge.texttospeech
+import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import android.speech.tts.TextToSpeech
+import android.util.Log
+import android.widget.Button
+import android.widget.EditText
+import android.widget.SeekBar
+import java.util.*
+class MainActivity : AppCompatActivity() {
+ private lateinit var speakBtn:Button
+ private lateinit var userText:EditText
+ private lateinit var seekBerPitch:SeekBar
+ private lateinit var seekBerSpeed:SeekBar
+ private lateinit var mTTs :TextToSpeech
+ //private lateinit var btnClear :Button
+ override fun onCreate(savedInstanceState: Bundle?) {
+ super.onCreate(savedInstanceState)
+ setContentView(R.layout.activity_main)
+ /**set find view Id*/
+ speakBtn = findViewById(R.id.btnSpeak)
+ userText = findViewById(R.id.edTv)
+ seekBerPitch = findViewById(R.id.seekBar_pitch)
+ seekBerSpeed = findViewById(R.id.seekBar_speed)
+ mTTs = TextToSpeech(this){status->
+ if (status == TextToSpeech.SUCCESS){
+ val result = mTTs.setLanguage(Locale.ENGLISH)
+ if (result == TextToSpeech.LANG_MISSING_DATA
+ || result == TextToSpeech.LANG_NOT_SUPPORTED){
+ Log.e("TTs","Language is not Supported")
+ }else{
+ speakBtn.isEnabled = true
+ }
+ }
+ else{
+ Log.e("TTs","Initialization failed")
+ }
+ }
+ speakBtn.setOnClickListener { speak() }
+ }
+ @Suppress("DEPRECATION")
+ private fun speak() {
+ val text = userText.text.toString()
+ var pitch = seekBerPitch.progress.toFloat()/50
+ if (pitch<0.1) pitch = 0.1f
+ var speed = seekBerSpeed.progress.toFloat()/50
+ if (speed<0.1) speed = 0.1f
+ mTTs.setPitch(pitch)
+ mTTs.setSpeechRate(speed)
+ mTTs.speak(text,TextToSpeech.QUEUE_FLUSH,null)
+ }
+ override fun onDestroy() {
+ if (mTTs != null){
+ mTTs.stop()
+ mTTs.shutdown()
+ }
+ super.onDestroy()
+ }
+}
+
+LAB-08
+
+package `in`.edu.cambridge.phonedialer
+import android.content.Intent
+import android.net.Uri
+import android.os.Bundle
+import android.provider.ContactsContract
+import android.widget.Button
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+class MainActivity : AppCompatActivity() {
+ private lateinit var saveBtn: Button
+ private lateinit var callBtn: Button
+ private lateinit var zero: TextView
+ private lateinit var one: TextView
+ private lateinit var two: TextView
+ private lateinit var three: TextView
+ private lateinit var four: TextView
+ private lateinit var five: TextView
+ private lateinit var six: TextView
+ private lateinit var seven: TextView
+ private lateinit var eight: TextView
+ private lateinit var nine: TextView
+ private lateinit var star: TextView
+ private lateinit var hash: TextView
+ private lateinit var clear: TextView
+ private lateinit var contact: TextView
+ override fun onCreate(savedInstanceState: Bundle?) {
+ super.onCreate(savedInstanceState)
+ setContentView(R.layout.activity_main)
+ saveBtn = findViewById(R.id.save)
+ callBtn = findViewById(R.id.call)
+ zero = findViewById(R.id.zero)
+ one = findViewById(R.id.one)
+ two = findViewById(R.id.two)
+ three = findViewById(R.id.three)
+ four = findViewById(R.id.four)
+ five = findViewById(R.id.five)
+ six = findViewById(R.id.six)
+ seven = findViewById(R.id.seven)
+ eight = findViewById(R.id.eight)
+ nine = findViewById(R.id.nine)
+ star = findViewById(R.id.star)
+ hash = findViewById(R.id.hash)
+ clear = findViewById(R.id.clear)
+ contact = findViewById(R.id.contact)
+ zero.setOnClickListener {
+ pressButton("0", true)
+ }
+ one.setOnClickListener {
+ pressButton("1", true)
+ }
+ two.setOnClickListener {
+ pressButton("2", true)
+ }
+ three.setOnClickListener {
+ pressButton("3", true)
+ }
+ four.setOnClickListener {
+ pressButton("4", true)
+ }
+ five.setOnClickListener {
+ pressButton("5", true)
+ }
+ six.setOnClickListener {
+ pressButton("6", true)
+ }
+ seven.setOnClickListener {
+ pressButton("7", true)
+ }
+ eight.setOnClickListener {
+ pressButton("8", true)
+ }
+ nine.setOnClickListener {
+ pressButton("9", true)
+ }
+ star.setOnClickListener {
+ pressButton("*", true)
+ }
+ hash.setOnClickListener {
+ pressButton("#", true)
+ }
+ clear.setOnClickListener {
+ contact.text = ""
+ }
+ callBtn.setOnClickListener {
+ val intent = Intent(Intent.ACTION_CALL, Uri.parse("tel:" + "${contact.text}"))
+ startActivity(intent)
+ }
+ saveBtn.setOnClickListener {
+ val intent = Intent(
+ ContactsContract.Intents.SHOW_OR_CREATE_CONTACT,
+ Uri.parse("tel:" + contact.text))
+ intent.putExtra(ContactsContract.Intents.EXTRA_FORCE_CREATE, true)
+ startActivity(intent)
+ }
+ }
+ fun pressButton(string: String, clear: Boolean) {
+ if (!clear) {
+ contact.text = ""
+ } else {
+ contact.append(string)
+ }
+ }
+}
+
+
+
+
+
